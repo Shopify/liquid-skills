@@ -172,6 +172,7 @@ Sections and blocks require `{% schema %}` with a valid JSON object. Sections us
 | Article picker | `article` | — |
 | URL entry | `url` | — |
 | Menu picker | `link_list` | — |
+| Color scheme | `color_scheme` | `default: "scheme-1"` |
 | Font picker | `font_picker` | `default` (required) |
 | Editor header | `header` | `content` (no `id` needed) |
 | Editor description | `paragraph` | `content` (no `id` needed) |
@@ -202,7 +203,9 @@ Conditionally shows/hides a setting in the editor based on other setting values.
 
 ### Per-component styles and scripts
 
-Use `{% stylesheet %}` and `{% javascript %}` in sections, blocks, and snippets:
+Two approaches for CSS/JS in themes:
+
+**Inline tags** (simpler, colocated with markup — good for small components):
 
 ```liquid
 {% stylesheet %}
@@ -217,6 +220,15 @@ Use `{% stylesheet %}` and `{% javascript %}` in sections, blocks, and snippets:
 - **One tag each per file** — multiple `{% stylesheet %}` tags will error
 - **No Liquid inside** — these tags don't process Liquid; use CSS variables or classes instead
 - Only supported in `sections/`, `blocks/`, and `snippets/`
+
+**External asset files** (better caching, good for larger components):
+
+```liquid
+{{ 'section-my-section.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-my-section.js' | asset_url }}" defer></script>
+```
+
+Use inline tags for small, self-contained components. Use external assets for larger sections with substantial CSS/JS, or when the same styles are shared across multiple files.
 
 ### `{% style %}` tag (Liquid-aware CSS)
 
@@ -242,23 +254,52 @@ For dynamic CSS that needs Liquid (e.g., color settings that live-update in edit
 <div class="{{ block.settings.layout }}">
 ```
 
+### Responsive section padding
+
+A common Dawn pattern for section padding that scales on mobile:
+
+```liquid
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+```
+
 ## LiquidDoc (`{% doc %}`)
 
 **Required for:** snippets (always), blocks (when statically rendered via `{% content_for 'block' %}`)
 
+Every snippet must have a `{% doc %}` block — this is the primary way to document what parameters a snippet accepts and how to use it.
+
 ```liquid
 {% doc %}
-  Brief description of what this file renders.
+  Renders product pricing with sale, sold-out, and unit pricing support.
 
-  @param {type} name - Description of required parameter
-  @param {type} [name] - Description of optional parameter (brackets = optional)
+  @param {object} product - The product object (required)
+  @param {object} [variant] - A specific variant to display pricing for.
+    Defaults to product.selected_or_first_available_variant.
+  @param {boolean} [show_badges] - Whether to show sale/sold-out badges. Defaults to true.
 
   @example
-  {% render 'snippet-name', name: value %}
+  {% render 'product-price', product: product %}
+
+  @example
+  {% render 'product-price', product: product, variant: current_variant, show_badges: false %}
 {% enddoc %}
 ```
 
 **Param types:** `string`, `number`, `boolean`, `image`, `object`, `array`
+
+Always include at least one `@example` showing the most common usage. Use brackets `[param]` for optional parameters and document their defaults.
 
 ## Translations
 
@@ -304,6 +345,7 @@ locales/
 - Use **sentence case** for all text (capitalize first word only)
 - Schema labels use `t:` prefix: `"label": "t:labels.heading"`
 - Group by component: `sections.hero.heading`, `blocks.slide.title`
+- Schema `default` values are conventionally hardcoded English — they are fallback text for the editor, not rendered strings. Only `label` and `info` fields need `t:` prefixes.
 
 ## References
 
