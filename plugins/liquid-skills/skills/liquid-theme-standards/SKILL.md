@@ -129,9 +129,23 @@ Use CSS custom properties for all values — never hardcode colors, spacing, or 
 ```
 
 **Key principles:**
-- Use `rem` for spacing and typography (respects user font size preferences)
+- Use `rem` for spacing, typography, max-width, min-height (respects user font size preferences)
+- `px` is acceptable for borders, outlines, and box-shadows where sub-pixel precision matters
 - Name tokens semantically: `--space-sm` not `--space-16`
 - Define in `:root` for global tokens, on component root for scoped tokens
+- Never hardcode colors — even overlays should use custom properties:
+
+```css
+/* Do: overlay via custom property */
+.hero__overlay {
+  background: rgb(var(--hero-overlay-rgb, 0 0 0) / var(--hero-overlay-opacity, 0.4));
+}
+
+/* Don't: hardcode overlay color */
+.hero__overlay {
+  background: rgb(0 0 0 / 0.4);
+}
+```
 
 ### CSS Variable Scoping
 
@@ -225,8 +239,28 @@ top: 0; right: 0; bottom: 0; left: 0;
 
 - Animate only `transform` and `opacity` (never layout properties)
 - Use `will-change` sparingly — remove after animation
-- Use `contain: content` for isolated rendering
+- Use `contain: content` on repeated card components for isolated rendering:
+  ```css
+  .product-card { contain: content; }
+  ```
 - Use `dvh` instead of `vh` on mobile
+
+### Print & High Contrast
+
+```css
+/* Print — hide interactive elements, prevent page breaks inside cards */
+@media print {
+  .product-card__button { display: none; }
+  .product-card { break-inside: avoid; }
+}
+
+/* Windows High Contrast Mode — ensure focus indicators are visible */
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 3px solid LinkText;
+  }
+}
+```
 
 ### Reduced Motion
 
