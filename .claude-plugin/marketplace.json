@@ -1,0 +1,21 @@
+{
+  "name": "liquid-skills",
+  "owner": {
+    "name": "Shopify"
+  },
+  "metadata": {
+    "description": "Liquid language support plugins for Claude Code"
+  },
+  "plugins": [
+    {
+      "name": "liquid-lsp",
+      "source": "./plugins/liquid-lsp",
+      "description": "LSP integration for Shopify Liquid templates via the Shopify CLI theme language server"
+    },
+    {
+      "name": "liquid-skills",
+      "source": "./plugins/liquid-skills",
+      "description": "Liquid language fundamentals, CSS/JS/HTML coding standards, and WCAG accessibility patterns for Shopify themes"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "liquid-skills",
+  "description": "Liquid language fundamentals, CSS/JS/HTML coding standards, and WCAG accessibility patterns for Shopify themes",
+  "version": "1.0.0",
+  "author": {
+    "name": "Shopify"
+  },
+  "repository": "https://github.com/Shopify/liquid-skills",
+  "license": "MIT",
+  "keywords": ["liquid", "shopify", "theme", "accessibility", "css", "javascript"]
+}

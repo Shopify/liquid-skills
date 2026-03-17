@@ -1,0 +1,10 @@
+{
+  "theme-language-server": {
+    "command": "shopify",
+    "args": ["theme", "language-server"],
+    "extensionToLanguage": {
+      ".liquid": "liquid",
+      ".json": "json"
+    }
+  }
+}
