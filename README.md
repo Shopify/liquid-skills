@@ -37,7 +37,6 @@ Three Claude Agent Skills for Shopify Liquid theme development:
 | [`liquid-theme-standards`](./plugins/liquid-skills/skills/liquid-theme-standards/) | CSS/JS/HTML | BEM in `{% stylesheet %}`, design tokens, Web Components, defensive CSS |
 | [`liquid-theme-a11y`](./plugins/liquid-skills/skills/liquid-theme-a11y/) | Accessibility | WCAG patterns for e-commerce components |
 
-Originally created by [Benjamin Sehl](https://github.com/benjaminsehl) ([source](https://github.com/benjaminsehl/liquid-skills)).
 
 ## Development
 
