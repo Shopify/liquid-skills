@@ -209,8 +209,8 @@ See [focus and keyboard patterns](references/focus-and-keyboard.md) for full Foc
 ```
 
 **Rules:**
-- Use native `<dialog>` element
-- `aria-labelledby` pointing to the title
+- Use native `<dialog>` element — never `<div role="dialog">`. Native `<dialog>` with `showModal()` provides built-in focus trapping, Escape-to-close, and backdrop, eliminating three categories of custom JS bugs.
+- `aria-labelledby` pointing to the title (not `aria-label` with a string — `aria-labelledby` stays in sync when the title changes)
 - Close on Escape key (native with `<dialog>`)
 - Focus first interactive element on open
 - Return focus to trigger on close
@@ -290,11 +290,13 @@ Same as modal pattern but with additional:
     <span>{{ product.price | money }}</span>
   </div>
 {% else %}
-  <div class="price">{{ product.price | money }}</div>
+  <div class="price" aria-label="{{ 'products.price_label' | t: price: product.price | money }}">
+    {{ product.price | money }}
+  </div>
 {% endif %}
 ```
 
-- Use `aria-label` to provide full price context (sale vs. original)
+- Use `aria-label` on **both** sale and regular price paths — screen readers need context for any price display
 - `aria-hidden="true"` on the visual strikethrough to avoid duplicate reading
 
 ### Accordion
@@ -416,6 +418,47 @@ Native `<details>/<summary>` provides keyboard and screen reader support automat
 ```
 
 Use for screen-reader-only content like labels and descriptions.
+
+## Progressive Enhancement
+
+Interactive components should work without JavaScript where possible. Provide `<noscript>` fallbacks for JS-dependent controls:
+
+```html
+{%- comment -%} Variant picker with noscript fallback {%- endcomment -%}
+<variant-picker>
+  <!-- JS-enhanced radio buttons / swatches here -->
+</variant-picker>
+<noscript>
+  <select name="id" aria-label="{{ 'products.select_variant' | t }}">
+    {% for variant in product.variants %}
+      <option value="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}>
+        {{ variant.title }} - {{ variant.price | money }}
+      </option>
+    {% endfor %}
+  </select>
+</noscript>
+```
+
+### Live Region for Dynamic Updates
+
+When selections change (variants, filters, cart), announce the change to screen readers:
+
+```html
+<div aria-live="polite" aria-atomic="true" class="visually-hidden">
+  {{ 'products.variant_selected' | t: variant: selected_variant.title }}
+</div>
+```
+
+Use the clear-then-set pattern in JS to ensure announcements fire reliably:
+
+```javascript
+announce(message) {
+  this.liveRegion.textContent = '';
+  requestAnimationFrame(() => {
+    this.liveRegion.textContent = message;
+  });
+}
+```
 
 ## Color Contrast
 
