@@ -209,7 +209,7 @@ See [focus and keyboard patterns](references/focus-and-keyboard.md) for full Foc
 ```
 
 **Rules:**
-- Use native `<dialog>` element — never `<div role="dialog">`. Native `<dialog>` with `showModal()` provides built-in focus trapping, Escape-to-close, and backdrop, eliminating three categories of custom JS bugs.
+- Prefer native `<dialog>` element for modal UI when feasible. `showModal()` provides native modal behavior, Escape-to-close, and backdrop handling, but `role="dialog"` remains a valid fallback when native `<dialog>` is not a good fit.
 - `aria-labelledby` pointing to the title (not `aria-label` with a string — `aria-labelledby` stays in sync when the title changes)
 - Close on Escape key (native with `<dialog>`)
 - Focus first interactive element on open
