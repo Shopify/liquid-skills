@@ -19,6 +19,12 @@ Add the marketplace, then install plugins:
 /plugin install liquid-skills@liquid-skills
 ```
 
+In Neotask, install the liquid-skills plugin from [Neotask Construct](https://construct.neotask.ai/p/shopify-liquid-skills) with the Neotask CLI, or from the Neotask desktop app under Agents > Skills > Add-ons:
+
+```
+neotask construct install shopify-liquid-skills
+```
+
 ## Prerequisites
 
 The [Shopify CLI](https://shopify.dev/docs/api/shopify-cli) must be installed (required by the LSP plugin):
